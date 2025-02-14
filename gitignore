@@ -30,9 +30,7 @@ build/
 *.pyd
 *.sqlite3
 db.sqlite3
-media/
-staticfiles/
-static/
+
 
 # If you are using Django Compressor
 compressor_output/
