@@ -23,6 +23,8 @@ from profile import views as profile_views
 urlpatterns = [
     path('', profile_views.index, name='index'),
     path('admin/', admin.site.urls),
+    path('register/', profile_views.register, name='register'),
+    path('add_word/', profile_views.add_word, name='add_word'),
 ]
 
 if settings.DEBUG:
