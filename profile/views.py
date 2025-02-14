@@ -3,11 +3,21 @@ from django.contrib.auth import login
 from django.http import HttpResponse
 from .forms import UserForm, ProfileForm
 from .models import Profile
+from datetime import datetime
 
 # Create your views here.
+
+
+# def index(request):
+#     # return HttpResponse("Hello, world. You're at the profiles index.")
+#     return render(request, 'index.html')
+
+
 def index(request):
-    # return HttpResponse("Hello, world. You're at the profiles index.")
-    return render(request, 'index.html')
+    current_year = datetime.now().year
+    return render(
+        request, 'index.html', {'current_year': current_year}
+    )
 
 
 def register(request):
