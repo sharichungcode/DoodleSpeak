@@ -33,9 +33,9 @@
                                     Drawing <span id="round-number">1</span>/6
                                 </p>
                                 <button id="exit-button" class="btn btn-lg position-absolute top-0 end-0 mx-2"
-                                    onclick="window.location.href='{% url 'home' %}'">
+                                    onclick="window.location.href=`{% url 'game_index' %}`">
                                     <i class="fas fa-times text-dark"></i>
-                                </button>
+                                </button>                                
                             </div>
                         </div>
                     </div>
@@ -47,6 +47,12 @@
                 <h1 class="display-6 text-center py-2 mb-3 bg-white text-primary w-100">Wine Bottle</h1>
                 <p>In under 20 seconds</p>
                 <button id="start-button" class="btn btn-lg btn-primary">Got it !</button>
+               
+                <form method="post" action="{% url 'add_word' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="word" value="test_word">
+                    <button type="submit">Add a Word</button>
+                </form>
             </div>
         </div>
     </div>

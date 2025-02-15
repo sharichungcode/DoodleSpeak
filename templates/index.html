@@ -27,13 +27,13 @@
         </h1>
         <p class="lead">Learn English in the most fun way—by doodling!</p>
         <div class="my-4">
-            <button class="btn btn-primary btn-lg me-2 mb-2 mb-md-0" onclick="window.location.href='{% url 'game' %}'">Start Playing <i class="fas fa-arrow-right"></i></button>
+            <button class="btn btn-primary btn-lg me-2 mb-2 mb-md-0" onclick="window.location.href=`{% url 'game' %}`">Start Playing <i class="fas fa-arrow-right"></i></button>
             <br>
 
             <a href="{% url 'user_form' %}" class="text-primary text-decoration-underline mt-3 d-inline-block" data-bs-toggle="modal" data-bs-target="#userFormModal">Sign In / Register</a>
 
             <!-- <a href="#" class="text-primary text-decoration-underline mt-3 d-inline-block">Sign In / Register</a> -->
-            <a href="{% url 'dashboard_index' %}">Go to Dashboard</a>
+            
 
         </div>
     </div>
@@ -75,7 +75,7 @@
             </div>
         </div>
         <div class="text-center mt-4">
-            <button class="btn btn-primary btn-lg">Play Now <i class="fas fa-gamepad"></i></button>
+            <button class="btn btn-primary btn-lg" onclick="window.location.href=`{% url 'game' %}`">Play Now <i class="fas fa-gamepad"></i></button>
         </div>
     </div>
     {% include 'footer.html' %}
