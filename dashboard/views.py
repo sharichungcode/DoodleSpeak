@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Dashboard
 from django.contrib.auth.decorators import login_required
+from accounts.forms import UserForm
 
 # Create your views here.
 def home(request):
-    return render(request, 'index.html') 
+    form = UserForm()
+    return render(request, 'index.html',{'form': form}) 
 
 # def index(request):
 #     dashboard = Dashboard.objects.get(user=request.user)
