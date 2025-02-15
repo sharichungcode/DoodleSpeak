@@ -277,6 +277,6 @@ p, a, span, li, div {
 
 /* Canvas styles */
 #drawing-canvas {
-    border: 1px solid #ccc;
+    border: 0px solid #ccc;
     cursor: crosshair;
 }
