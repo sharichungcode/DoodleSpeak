@@ -19,19 +19,22 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 # from dashboard import views as dashboard_views
-from profile import views as profile_views
+# from profile import views as profile_views
 
 
 urlpatterns = [
-    # path('', dashboard_views.index, name='index'),
-    # path('', include('index.urls')),
-    path('', include('dashboard.urls')), 
     path('admin/', admin.site.urls),
-    path('game/', profile_views.game, name='game'),
+    path('accounts/', include('accounts.urls')),
+    path('dashboard/', include('dashboard.urls')),
+    path('', include('game.urls')),
+    
+
+    # path('game/', profile_views.game, name='game'),
     # path('', include('dashboard.urls')), 
     # path('register/', dashboard_views.register, name='register'),
     # path('add_word/', dashboard_views.add_word, name='add_word'),
-    path('accounts/', include('accounts.urls')),
+    # path('', dashboard_views.index, name='index'),
+    # path('', include('index.urls')),
 ]
 
 if settings.DEBUG:

@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'profile',
     'accounts',
     'dashboard',
+    'game',
 ]
 
 MIDDLEWARE = [
