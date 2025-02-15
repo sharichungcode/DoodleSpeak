@@ -18,14 +18,18 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from profile import views as profile_views
+# from dashboard import views as dashboard_views
+
 
 urlpatterns = [
-    path('', profile_views.index, name='index'),
+    # path('', dashboard_views.index, name='index'),
+    # path('', include('index.urls')),
+    path('', include('dashboard.urls')), 
     path('admin/', admin.site.urls),
-    path('register/', profile_views.register, name='register'),
-    path('add_word/', profile_views.add_word, name='add_word'),
     path('game/', profile_views.game, name='game'),
+    # path('', include('dashboard.urls')), 
+    # path('register/', dashboard_views.register, name='register'),
+    # path('add_word/', dashboard_views.add_word, name='add_word'),
 ]
 
 if settings.DEBUG:
