@@ -51,7 +51,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'profile',
+<<<<<<< HEAD
+    'accounts',
+=======
     'dashboard',
+>>>>>>> 876e7ddaf572ee6c9ce980f09d4d466662c6dbcb
 ]
 
 MIDDLEWARE = [

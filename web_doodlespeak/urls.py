@@ -31,6 +31,7 @@ urlpatterns = [
     # path('', include('dashboard.urls')), 
     # path('register/', dashboard_views.register, name='register'),
     # path('add_word/', dashboard_views.add_word, name='add_word'),
+    path('accounts/', include('accounts.urls')),
 ]
 
 if settings.DEBUG:
