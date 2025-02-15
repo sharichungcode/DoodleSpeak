@@ -49,5 +49,9 @@ def add_word(request):
             user_profile.words_history.append(word)
             user_profile.save()
             return HttpResponse("Word added to history.")
-    return render(request, 'profile/add_word.html')
-    # return HttpResponse("Failed to add word.")
+        return render(request, 'profile/add_word.html')
+        # return HttpResponse("Failed to add word.")
+
+
+def game(request):
+    return render(request, 'game.html')
