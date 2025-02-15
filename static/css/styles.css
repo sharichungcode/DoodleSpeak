@@ -223,6 +223,12 @@ body {
     color: var(--bs-dark);
 }
 
+label {
+    display: block !important;  /* Force visibility */
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
 /* Custom Heading Fonts */
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Schoolbell', sans-serif;
