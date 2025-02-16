@@ -70,3 +70,5 @@ coverage.xml
 # Windows
 Thumbs.db
 ehthumbs.db
+
+google_credentials.json
