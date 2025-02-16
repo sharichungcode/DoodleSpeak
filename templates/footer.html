@@ -1,4 +1,9 @@
 <footer class="container mt-5 text-center">
-    <p><i class="fas fa-lightbulb"></i> Want to track your progress? <a href="#">Sign up now!</a></p>
+    <p><i class="fas fa-lightbulb"></i> Want to track your progress? 
+        {% if not user.is_authenticated %}
+        <a href="#" data-bs-toggle="modal" data-bs-target="#authModal">Sign up now!</a>
+        {% endif %}
+    </p>
+        
     <p>&copy; {{ current_year }} DoodleSpeak. All rights reserved.</p>
 </footer>
