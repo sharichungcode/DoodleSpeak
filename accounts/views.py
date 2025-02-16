@@ -1,29 +1,35 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from .forms import UserForm
-from .models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.shortcuts import redirect
 
-def user_form_view(request):
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            user = authenticate(request, username=email, password=password)
+def auth_modal(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
-            if user is not None:
+        # Check if the user exists
+        if User.objects.filter(username=username).exists():
+            user = authenticate(request, username=username, password=password)
+            
+            if user:
                 login(request, user)
-                return redirect('home')
+                return JsonResponse({"status": "success", "message": "Logged in successfully!"})
             else:
-                if User.objects.filter(email=email).exists():
-                    form.add_error('email', 'Email already exists')
-                else:
-                    user = User.objects.create(email=email)
-                    user.set_password(password)
-                    user.save()
-                    login(request, user)
-                    return redirect('home')
-    else:
-        form = UserForm()
+                return JsonResponse({"status": "error", "message": "Incorrect password!"})
+        else:
+            # If user does not exist, create a new one
+            user = User.objects.create_user(username=username, password=password)
+            login(request, user)
+            return JsonResponse({"status": "success", "message": "New account created and logged in!"})
 
-    return render(request, 'index.html', {'form': form})
+    return JsonResponse({"status": "error", "message": "Invalid request."})
+
+
+def logout_user(request):
+    if request.method == "POST":
+        logout(request)
+        return JsonResponse({"status": "success", "message": "Logged out successfully!"})
+
+    return JsonResponse({"status": "error", "message": "Invalid request."})
+
