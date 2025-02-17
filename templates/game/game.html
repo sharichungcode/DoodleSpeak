@@ -47,7 +47,7 @@
                 <h1 class="display-6 text-center py-2 mb-3 bg-white text-primary w-100">Wine Bottle</h1>
                 <p>In under 20 seconds</p>
                 <button id="start-button" class="btn btn-lg btn-primary">Got it !</button>
-               
+                
                 <form method="post" action="{% url 'add_word' %}">
                     {% csrf_token %}
                     <input type="hidden" name="word" value="test_word">
@@ -87,6 +87,8 @@
             <div class="w-100">
                 <div class="container text-center">
                     <h1 class="display-6 text-primary text-center py-2 m-0">Wine Bottle</h1>
+                    <button id="submit-button">Submit</button>
+                    <div id="labels-container"></div>
                     <ul id="ai-guesses" class="list-group"></ul>
                     <div class="speech-bubble-wrapper position-relative d-flex justify-content-center">
                         <div class="speech-bubble rounded bg-white p-2 shadow-sm w-100">
@@ -213,6 +215,12 @@
             }, 1000);
         });
 
+        // Function to draw the white background
+        function drawWhiteBackground() {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
         document.getElementById('start-button').addEventListener('click', function () {
             document.getElementById('overlay').classList.add('hide');
         });
@@ -270,8 +278,72 @@
 
         // Clear canvas functionality
         document.getElementById('erase-button').addEventListener('click', function () {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            //ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawWhiteBackground();
         });
+
+        // This function calls the service that will analyze the image using Google Vision API.
+        document.getElementById('submit-button').addEventListener('click', function () {
+        const dataURL = canvas.toDataURL('image/png');
+        //targetWord = "Wine Bottle";
+        const targetWord = "bottle";
+        // console.log(dataURL);
+        fetch('/game/analyze_image/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ image: dataURL })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // console.log(data);
+            alert(JSON.stringify(data));
+            const labelsContainer = document.getElementById('labels-container');
+            labelsContainer.innerHTML = ''; // Clear previous labels
+
+            data.labels.forEach(label => {
+                const words = label.split(' '); // Split compound words
+                words.forEach(word => {
+                    const span = document.createElement('span');
+                    span.className = 'badge text-dark fw-normal';
+                    span.style.backgroundColor = 'rgba(108, 117, 125, 0.1)';
+                    span.textContent = word;
+                    labelsContainer.appendChild(span);
+
+                    // Check if the word matches the target word
+                    if (word.toLowerCase() === targetWord.toLowerCase()) {
+                        const matchedSpan = document.createElement('span');
+                        matchedSpan.className = 'badge text-success fw-normal';
+                        matchedSpan.style.backgroundColor = 'rgba(40, 167, 69, 0.1)';
+                        matchedSpan.textContent = `Matched: ${word}`;
+                        labelsContainer.appendChild(matchedSpan);
+                    }
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+
+    //This function adds the CSRF token to the request header.
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    drawWhiteBackground();
     </script>
 </body>
 
