@@ -5,7 +5,7 @@ DoodleSpeak is a fun AI-powered Pictionary game for learning English vocabulary.
 ![DoodleSpeak Logo](images/logo.png)
 
 ## Deployment
-[DoodleSpeak Live](https://doodlespeak.herokuapp.com)
+[DoodleSpeak Live](https://doodlespeak-c9a180f0ef00.herokuapp.com/)
 
 ## Responsiveness
 ![Responsive Design](images/responsive_design.png)
