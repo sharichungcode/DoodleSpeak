@@ -47,7 +47,7 @@
                 <h1 class="display-6 text-center py-2 mb-3 bg-white text-primary w-100">Wine Bottle</h1>
                 <p>In under 20 seconds</p>
                 <button id="start-button" class="btn btn-lg btn-primary">Got it !</button>
-               
+                
                 <form method="post" action="{% url 'add_word' %}">
                     {% csrf_token %}
                     <input type="hidden" name="word" value="test_word">
@@ -86,7 +86,9 @@
 
             <div class="w-100">
                 <div class="container text-center">
-                    <h1 class="display-6 text-primary text-center py-2 m-0">Wine Bottle</h1>
+                    <h1 id="selected-word" class="display-6 text-primary text-center py-2 m-0">Wine Bottle</h1>
+                    <!-- <button id="submit-button">Submit</button> -->
+                    <div id="labels-container"></div>
                     <ul id="ai-guesses" class="list-group"></ul>
                     <div class="speech-bubble-wrapper position-relative d-flex justify-content-center">
                         <div class="speech-bubble rounded bg-white p-2 shadow-sm w-100">
@@ -112,6 +114,24 @@
 
     <!-- The results summary -->
     <div id="results-summary" class="container-fluid d-flex justify-content-center align-items-center bg-light h-100 w-100 position-fixed top-0 start-0 px-0 hide">
+        <div class="container w-100 justify-content-center align-items-center flex-column flex-md-row">
+            <div class="col-12 text-center">
+                <h2>Well drawn, Shari!</h2>
+                <p>We recognized 5 out of 6 of your doodles! But it thought something else for one of them.</p>
+
+                <div class="row overflow-auto flex-nowrap mb-3">
+                    <!-- Aqui serão inseridos os resultados dinamicamente -->
+                </div>
+                <button id="save-progress-button" class="btn btn-lg btn-primary m-2">
+                    Save My Progress <i class="fas fa-arrow-right"></i>
+                </button>
+                <button id="play-again-button" class="btn btn-lg btn-outline-primary m-2" onclick="location.reload();">
+                    <i class="fas fa-redo-alt"></i> Play Again
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- <div id="results-summary" class="container-fluid d-flex justify-content-center align-items-center bg-light h-100 w-100 position-fixed top-0 start-0 px-0 hide">
         <div class="container w-100 justify-content-center align-items-center flex-column flex-md-row">
             <div class="col-12 text-center">
                 <h2>Well drawn, Shari!</h2>
@@ -176,102 +196,199 @@
                 <button id="save-progress-button" class="btn btn-lg btn-primary m-2">
                     Save My Progress <i class="fas fa-arrow-right"></i>
                 </button>
-                <button id="play-again-button" class="btn btn-lg btn-outline-primary m-2">
+                <button id="play-again-button" class="btn btn-lg btn-outline-primary m-2" onclick="location.reload();">
                     <i class="fas fa-redo-alt"></i> Play Again
                 </button>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/scripts.js' %}"></script>
 
     <script>
-        document.getElementById('start-button').addEventListener('click', function () {
-            document.getElementById('overlay').style.display = 'none';
-            let timeLeft = 20;
-            const timerElement = document.getElementById('timer');
-            const countdown = setInterval(function () {
-                if (timeLeft <= 0) {
-                    clearInterval(countdown);
-                    timerElement.innerHTML = 'Time\'s up!';
-                    const resultsSummary = document.getElementById('results-summary');
-                    resultsSummary.classList.remove('hide');
-                    resultsSummary.classList.add('show');
-                } else {
-                    let minutes = Math.floor(timeLeft / 60);
-                    let seconds = timeLeft % 60;
-                    timerElement.innerHTML =
-                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                    if (timeLeft <= 10) {
-                        timerElement.classList.add('text-danger');
-                    } else {
-                        timerElement.classList.remove('text-danger');
-                    }
-                }
-                timeLeft -= 1;
-            }, 1000);
-        });
 
-        document.getElementById('start-button').addEventListener('click', function () {
-            document.getElementById('overlay').classList.add('hide');
-        });
+    // Drawing functionality
+    const canvas = document.getElementById('drawing-canvas');
+    const ctx = canvas.getContext('2d');
+    let painting = false;
+    const brushSize = 5; // Fixed brush size
+    const brushColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-primary').trim(); // Fixed brush color
 
-        // Adjust canvas height and width based on game-controls width and navbar height
-        function adjustCanvasSize() {
-            const navbarHeight = document.querySelector('nav.navbar').offsetHeight;
-            const gameControlsHeight = document.getElementById('game-controls').offsetHeight;
-            const canvas = document.getElementById('drawing-canvas');
-            const canvasContainer = canvas.parentElement;
-
-            // Set the canvas width and height to match the container
-            canvas.width = canvasContainer.clientWidth;
-            canvas.height = window.innerHeight - gameControlsHeight - navbarHeight;
-        }
-
-        // Adjust canvas size on window resize
-        window.addEventListener('resize', adjustCanvasSize);
-
-        // Adjust canvas size on initial load
-        window.addEventListener('load', adjustCanvasSize);
-
-        // Drawing functionality
+    // Adjust canvas height and width based on game-controls width and navbar height
+    function adjustCanvasSize() {
+        const navbarHeight = document.querySelector('nav.navbar').offsetHeight;
+        const gameControlsHeight = document.getElementById('game-controls').offsetHeight;
         const canvas = document.getElementById('drawing-canvas');
-        const ctx = canvas.getContext('2d');
-        let painting = false;
-        const brushSize = 5; // Fixed brush size
-        const brushColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-primary').trim(); // Fixed brush color
+        const canvasContainer = canvas.parentElement;
 
-        function startPosition(e) {
-            painting = true;
-            draw(e);
+        // Set the canvas width and height to match the container
+        canvas.width = canvasContainer.clientWidth;
+        canvas.height = window.innerHeight - gameControlsHeight - navbarHeight;
+    }
+
+    // Adjust canvas size on window resize
+    window.addEventListener('resize', adjustCanvasSize);
+
+    // Adjust canvas size on initial load
+    window.addEventListener('load', adjustCanvasSize);
+
+    // Function to draw the white background
+    function drawWhiteBackground() {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    canvas.addEventListener('mousedown', startPosition);
+    canvas.addEventListener('mouseup', endPosition);
+    canvas.addEventListener('mousemove', draw);
+
+    // Clear canvas functionality
+    document.getElementById('erase-button').addEventListener('click', function () {
+        //ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawWhiteBackground();
+    });
+
+
+    const words = ["Kangaroo", "Tree", "House", "Car", "Wine Bottle", "Elephant"];
+    // const words = ["Kangaroo", "Tree"];
+    let currentWordIndex = 0;
+    let countdown;
+    const drawnImages = [];
+
+    function startNewRound() {       
+        const selectedWordElement = document.getElementById('selected-word');
+        selectedWordElement.textContent = words[currentWordIndex];
+        drawWhiteBackground();
+        if (currentWordIndex >= words.length) {
+            currentWordIndex = 0; // Reset the index if it exceeds the list length
+            const resultsSummary = document.getElementById('results-summary');
+            resultsSummary.classList.remove('hide');
+            resultsSummary.classList.add('show');
+            showResultsSummary()
+        } else {
+            currentWordIndex++;
+            startTimer();
         }
+    }
 
-        function endPosition() {
-            painting = false;
-            ctx.beginPath();
+    function startTimer() {
+        let timeLeft = 20;
+        const timerElement = document.getElementById('timer');
+        clearInterval(countdown); // Clear any existing timer
+        countdown = setInterval(function () {
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                timerElement.innerHTML = 'Time\'s up!';
+                saveCurrentDrawing();
+                startNewRound(); // Start a new round with the next word
+            } else {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerElement.innerHTML =
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                if (timeLeft <= 10) {
+                    timerElement.classList.add('text-danger');
+                } else {
+                    timerElement.classList.remove('text-danger');
+                }
+            }
+            timeLeft -= 1;
+        }, 1000);
+    }
+
+    function saveCurrentDrawing() {
+        const dataURL = canvas.toDataURL('image/png');
+        const selectedWordElement = document.getElementById('selected-word');
+        const word = selectedWordElement.textContent;
+        drawnImages.push({ word, dataURL });
+    }
+
+    function showResultsSummary() {
+        const resultsSummary = document.getElementById('results-summary');
+        const resultsContainer = resultsSummary.querySelector('.row');
+        resultsContainer.innerHTML = ''; // Clear previous results
+
+        drawnImages.forEach((drawing, index) => {
+        const col = document.createElement('div');
+        col.className = 'col-7 col-md-4 col-lg-2';
+
+        const card = document.createElement('div');
+        card.className = 'card h-100 bg-white shadow-sm border-0 rounded-4';
+
+        const img = document.createElement('img');
+        img.src = drawing.dataURL;
+        img.className = 'card-img-top p-3';
+        img.alt = `Doodle ${index + 1}`;
+
+        const cardBody = document.createElement('div');
+        cardBody.className = 'card-body text-center';
+
+        const cardTitle = document.createElement('p');
+        cardTitle.className = 'card-title badge rounded-pill text-dark position-absolute top-0 start-0 m-2 fw-normal';
+        cardTitle.style.backgroundColor = 'rgba(108, 117, 125, 0.1)';
+        cardTitle.textContent = `${index + 1}/${words.length}`;
+
+        const cardText = document.createElement('p');
+        cardText.className = 'card-text position-absolute bottom-0 start-50 translate-middle-x mb-2 px-2 fw-normal w-100';
+        cardText.textContent = drawing.word;
+
+        cardBody.appendChild(cardTitle);
+        cardBody.appendChild(cardText);
+        card.appendChild(img);
+        card.appendChild(cardBody);
+        col.appendChild(card);
+        resultsContainer.appendChild(col);
+    });
+
+        resultsSummary.classList.remove('hide');
+        resultsSummary.classList.add('show');
+    }
+
+    document.getElementById('start-button').addEventListener('click', function () {
+        document.getElementById('overlay').classList.add('hide');
+        startNewRound();
+    });
+
+    function startPosition(e) {
+        painting = true;
+        draw(e);
+    }
+
+    function endPosition() {
+        painting = false;
+        ctx.beginPath();
+    }
+
+    function draw(e) {
+        if (!painting) return;
+        ctx.lineWidth = brushSize;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = brushColor;
+
+        ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    }
+
+    //This function adds the CSRF token to the request header.
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
         }
+        return cookieValue;
+    }
 
-        function draw(e) {
-            if (!painting) return;
-            ctx.lineWidth = brushSize;
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = brushColor;
-
-            ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
-        }
-
-        canvas.addEventListener('mousedown', startPosition);
-        canvas.addEventListener('mouseup', endPosition);
-        canvas.addEventListener('mousemove', draw);
-
-        // Clear canvas functionality
-        document.getElementById('erase-button').addEventListener('click', function () {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        });
+    drawWhiteBackground();
     </script>
 </body>
 
