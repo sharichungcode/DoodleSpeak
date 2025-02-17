@@ -21,12 +21,14 @@ if os.path.isfile('env.py'):
     import env
 
 # Decode the base64 encoded Google credentials
-google_credentials_base64 = os.environ.get('GOOGLE_CREDENTIALS_BASE64')
-if google_credentials_base64:
-    google_credentials_json = base64.b64decode(google_credentials_base64).decode('utf-8')
-    google_credentials = json.loads(google_credentials_json)
-else:
-    google_credentials = None
+google_credentials_base64 = os.getenv("GOOGLE_CREDENTIALS", "")
+
+try:
+    google_credentials_json = base64.b64decode(google_credentials_base64).decode("utf-8")
+    GOOGLE_CREDENTIALS = json.loads(google_credentials_json)
+except (UnicodeDecodeError, json.JSONDecodeError):
+    GOOGLE_CREDENTIALS = None
+    print("⚠️ Warning: Invalid GOOGLE_CREDENTIALS format")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
