@@ -23,8 +23,12 @@ if os.path.isfile('env.py'):
 # Decode the base64 encoded Google credentials
 google_credentials_base64 = os.environ.get('GOOGLE_CREDENTIALS_BASE64')
 if google_credentials_base64:
-    google_credentials_json = base64.b64decode(google_credentials_base64).decode('utf-8')
-    google_credentials = json.loads(google_credentials_json)
+    try:
+        google_credentials_json = base64.b64decode(google_credentials_base64).decode('utf-8')
+        google_credentials = json.loads(google_credentials_json)
+    except (base64.binascii.Error, UnicodeDecodeError, json.JSONDecodeError) as e:
+        print(f"Error decoding Google credentials: {e}")
+        google_credentials = None
 else:
     google_credentials = None
 
