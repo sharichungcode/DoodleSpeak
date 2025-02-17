@@ -120,7 +120,7 @@
                 <p>We recognized 5 out of 6 of your doodles! But it thought something else for one of them.</p>
 
                 <div class="row overflow-auto flex-nowrap mb-3">
-                    <!-- Aqui serão inseridos os resultados dinamicamente -->
+                    <!-- The results will be dynamically inserted here -->
                 </div>
                 <button id="save-progress-button" class="btn btn-lg btn-primary m-2">
                     Save My Progress <i class="fas fa-arrow-right"></i>
@@ -131,6 +131,7 @@
             </div>
         </div>
     </div>
+    <p id="result"></p>
     <!-- <div id="results-summary" class="container-fluid d-flex justify-content-center align-items-center bg-light h-100 w-100 position-fixed top-0 start-0 px-0 hide">
         <div class="container w-100 justify-content-center align-items-center flex-column flex-md-row">
             <div class="col-12 text-center">
@@ -250,8 +251,8 @@
     });
 
 
-    const words = ["Kangaroo", "Tree", "House", "Car", "Wine Bottle", "Elephant"];
-    // const words = ["Kangaroo", "Tree"];
+    // const words = ["Kangaroo", "Tree", "House", "Car", "Wine Bottle", "Elephant"];
+    const words = ["helicopter", "Tree"];
     let currentWordIndex = 0;
     let countdown;
     const drawnImages = [];
@@ -301,7 +302,36 @@
         const dataURL = canvas.toDataURL('image/png');
         const selectedWordElement = document.getElementById('selected-word');
         const word = selectedWordElement.textContent;
-        drawnImages.push({ word, dataURL });
+        // drawnImages.push({ word, dataURL });
+
+                fetch('/game/analyze_image/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ image: dataURL, target_word: word })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            const result = data.labels.length > 0 ? "yes" : "no";
+            drawnImages.push({ word, dataURL, result });
+            const labelsContainer = document.getElementById('labels-container');
+            labelsContainer.innerHTML = ''; // Limpar o conteúdo anterior
+            if (data.labels.length > 0) {
+                data.labels.forEach(label => {
+                    const labelElement = document.createElement('div');
+                    labelElement.textContent = label;
+                    labelsContainer.appendChild(labelElement);
+                });
+            } else {
+                labelsContainer.textContent = 'No labels found.';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 
     function showResultsSummary() {
@@ -328,13 +358,18 @@
         cardTitle.className = 'card-title badge rounded-pill text-dark position-absolute top-0 start-0 m-2 fw-normal';
         cardTitle.style.backgroundColor = 'rgba(108, 117, 125, 0.1)';
         cardTitle.textContent = `${index + 1}/${words.length}`;
-
+     
         const cardText = document.createElement('p');
         cardText.className = 'card-text position-absolute bottom-0 start-50 translate-middle-x mb-2 px-2 fw-normal w-100';
         cardText.textContent = drawing.word;
 
+        const resultText = document.createElement('p');
+        resultText.className = 'result-text';
+        resultText.textContent = drawing.result;
+
         cardBody.appendChild(cardTitle);
         cardBody.appendChild(cardText);
+        cardBody.appendChild(resultText);
         card.appendChild(img);
         card.appendChild(cardBody);
         col.appendChild(card);
