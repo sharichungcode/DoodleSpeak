@@ -1,1 +1,1 @@
-web: gunicorn web_doodlespeak.wsgi
+web: gunicorn web_doodlespeak.wsgi --log-file -
