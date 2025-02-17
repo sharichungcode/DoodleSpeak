@@ -24,3 +24,6 @@ def add_word(request):
             return redirect('dashboard_index')
     return render(request, 'game/game.html')
 
+def index(request):
+    return render(request, 'game/index.html')
+

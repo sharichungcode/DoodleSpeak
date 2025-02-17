@@ -30,14 +30,6 @@
             <button class="btn btn-primary btn-lg me-2 mb-2 mb-md-0"
                 onclick="window.location.href=`{% url 'game' %}`">Start Playing <i
                     class="fas fa-arrow-right"></i></button>
-            <br>
-
-            <!-- Button to open modal -->
-            {% if user.is_authenticated %}
-            <button type="button" class="btn btn-danger" id="logoutBtn">Logout</button>
-            {% else %}
-            <a href="#" class="text-primary text-decoration-underline mt-3 d-inline-block" data-bs-toggle="modal" data-bs-target="#authModal">Sign In / Register</a>
-            {% endif %}
         </div>
     </div>
 
@@ -97,15 +89,14 @@
                     <form id="authForm" method="POST">
                         {% csrf_token %}
                         <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control mb-2" name="username" placeholder="Username" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control mb-2" name="password" placeholder="Password"
-                            required>
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control mb-2" name="email" placeholder="Email" required>
                         </div>
-                            <p id="errorMessage" style="color: red; display: none;"></p> <!-- Error message area -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control mb-2" name="password" placeholder="Password" required>
+                        </div>
+                        <p id="errorMessage" style="color: red; display: none;"></p> <!-- Error message area -->
                         <button type="submit" class="btn btn-primary w-100">Submit</button>
                     </form>
                 </div>
@@ -136,19 +127,6 @@
                 location.reload();  // Reload page after login/sign-up
             }
         };
-
-        document.getElementById("logoutBtn")?.addEventListener("click", async function () {
-            let response = await fetch("{% url 'logout_user' %}", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}"
-                }
-            });
-
-            let result = await response.json();
-            alert(result.message);
-            location.reload();  // Reload page after logout
-        });
     </script>
 </body>
 
