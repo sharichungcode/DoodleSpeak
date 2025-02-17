@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 def auth_modal(request):
     if request.method == "POST":
@@ -38,6 +39,7 @@ def update_account(request):
         user.username = request.POST.get('name')
         user.email = request.POST.get('email')
         user.save()
+        messages.success(request, 'Account updated successfully!')
         return redirect('account')
     return redirect('account')
 
@@ -45,17 +47,24 @@ def update_account(request):
 def change_password(request):
     if request.method == 'POST':
         user = request.user
-        new_password = request.POST.get('password')
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
         confirm_password = request.POST.get('confirm_password')
 
-        if new_password == confirm_password:
-            user.set_password(new_password)
-            user.save()
-            return JsonResponse({"status": "success", "message": "Password changed successfully!"})
-        else:
-            return JsonResponse({"status": "error", "message": "Passwords do not match!"})
+        if not user.check_password(current_password):
+            messages.error(request, 'Current password is incorrect.')
+            return redirect('change_password')
 
-    return JsonResponse({"status": "error", "message": "Invalid request."})
+        if new_password != confirm_password:
+            messages.error(request, 'New passwords do not match.')
+            return redirect('change_password')
+
+        user.set_password(new_password)
+        user.save()
+        messages.success(request, 'Password changed successfully!')
+        return redirect('index')
+
+    return render(request, 'access/change_password.html')
 
 def logout_user(request):
     if request.method == "POST":

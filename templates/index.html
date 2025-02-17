@@ -18,14 +18,13 @@
     <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 </head>
 
-<body>
+<body style="background-color: rgba(108, 117, 125, 0.1);">
     <!-- Your content here -->
     {% include 'navbar.html' %}
-    <div class="container-fluid bg-light text-dark text-center py-5">
-        <i class="fas fa-paint-brush fa-3x mb-4"></i>
-        <h1 class="display-4">Doodle. Guess. Speak!</i>
-        </h1>
-        <p class="lead">Learn English in the most fun way—by doodling!</p>
+    <div class="container-fluid bg-light text-center py-5">
+        <i class="fas fa-paint-brush fa-3x mb-4 text-primary"></i>
+        <h1 class="display-4 text-primary">Doodle. Guess. Speak!</h1>
+        <p class="lead text-dark">Learn English in the most fun way—by doodling!</p>
         <div class="my-4">
             <button class="btn btn-primary btn-lg me-2 mb-2 mb-md-0"
                 onclick="window.location.href=`{% url 'game' %}`">Start Playing <i
@@ -37,7 +36,7 @@
         <h2 class="text-center mb-4">How It Works</h2>
         <div class="row">
             <div class="col-12 col-md-3 mb-4">
-                <div class="card h-100">
+                <div class="card h-100 bg-white shadow-sm border-0 rounded-4">
                     <div class="card-body text-center">
                         <h3 class="card-title"><i class="fas fa-volume-up"></i><br>Hear & See</h3>
                         <p class="card-text">Listen to the pronunciation and view the phrase.</p>
@@ -45,7 +44,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-3 mb-4">
-                <div class="card h-100">
+                <div class="card h-100 bg-white shadow-sm border-0 rounded-4">
                     <div class="card-body text-center">
                         <h3 class="card-title"><i class="fas fa-pencil-alt"></i><br>Draw It!</h3>
                         <p class="card-text">Sketch your best guess on the canvas.</p>
@@ -53,7 +52,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-3 mb-4">
-                <div class="card h-100">
+                <div class="card h-100 bg-white shadow-sm border-0 rounded-4">
                     <div class="card-body text-center">
                         <h3 class="card-title"><i class="fas fa-robot"></i><br>AI Guesses!</h3>
                         <p class="card-text">Watch AI try to recognize your doodle.</p>
@@ -61,7 +60,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-3 mb-4">
-                <div class="card h-100">
+                <div class="card h-100 bg-white shadow-sm border-0 rounded-4">
                     <div class="card-body text-center">
                         <h3 class="card-title"><i class="fas fa-book"></i><br>Learn & Save</h3>
                         <p class="card-text">Review new words and track progress in your Word Bank!</p>
