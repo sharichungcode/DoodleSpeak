@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('dashboard/', include('dashboard.urls')),
+    path('game/', include('game.urls')),
     path('', include('game.urls')),
     path('', game_views.index, name='index'),  # Add this line if you have an index view
 ]
