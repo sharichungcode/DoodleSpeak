@@ -13,12 +13,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
-<<<<<<< HEAD
 import base64
 import json
-=======
 import django_heroku
->>>>>>> 15b04679983a60423f02dfe0ca674eecf280899f
 
 if os.path.isfile('env.py'):
     import env
